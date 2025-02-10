@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Create a Job{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4">Create a New Job</h2>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="mb-3">
+      <label for="{{ form.title.id_for_label }}" class="form-label">Job Title</label>
+      {{ form.title }}
+      {{ form.title.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+      {{ form.description }}
+      {{ form.description.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label for="{{ form.category.id_for_label }}" class="form-label">Category</label>
+      {{ form.category }}
+      {{ form.category.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label for="{{ form.subcategory.id_for_label }}" class="form-label">Subcategory</label>
+      {{ form.subcategory }}
+      {{ form.subcategory.errors }}
+    </div>
+
+    <!-- Since country and city are now CharFields, they will render as text inputs -->
+    <div class="mb-3">
+      <label for="{{ form.country.id_for_label }}" class="form-label">Country</label>
+      {{ form.country }}
+      {{ form.country.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label for="{{ form.city.id_for_label }}" class="form-label">City</label>
+      {{ form.city }}
+      {{ form.city.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label for="{{ form.job_type.id_for_label }}" class="form-label">Job Type</label>
+      {{ form.job_type }}
+      {{ form.job_type.errors }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a href="{% url 'job:dashboard' %}" class="btn btn-secondary ms-2">Cancel</a>
+  </form>
+</div>
+{% endblock %}

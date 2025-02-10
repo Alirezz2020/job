@@ -1,0 +1,46 @@
+<!-- job_list.html -->
+{% extends "base.html" %}
+{% block title %}Job Listings{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <h2>Job Listings</h2>
+  <form method="get" class="row g-3 mb-4">
+      <div class="col-md-3">
+          <select name="category" class="form-select">
+              <option value="">All Categories</option>
+              {% for cat in categories %}
+                <option value="{{ cat.slug }}">{{ cat.name }}</option>
+              {% endfor %}
+          </select>
+      </div>
+      <div class="col-md-3">
+          <select name="subcategory" class="form-select">
+              <option value="">All Subcategories</option>
+              {% comment %} You might load these dynamically via JS {% endcomment %}
+          </select>
+      </div>
+      <div class="col-md-3">
+          <input type="text" name="country" placeholder="Country " class="form-control">
+      </div>
+      <div class="col-md-3">
+          <input type="text" name="city" placeholder="City " class="form-control">
+      </div>
+      <div class="col-12">
+          <button type="submit" class="btn btn-primary">Filter</button>
+      </div>
+  </form>
+  <div class="row">
+    {% for job in jobs %}
+      <div class="col-md-6 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"><a href="{% url 'job:job_detail' job.pk %}">{{ job.title }}</a></h5>
+              <p class="card-text">Posted {{ job.posted_at|timesince }} ago</p>
+              <!-- Other job details -->
+            </div>
+          </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

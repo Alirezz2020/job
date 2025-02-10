@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ job.title }}{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <h2>{{ job.title }}</h2>
+  <p>Posted {{ job.posted_at|timesince }} ago</p>
+  <p>{{ job.description }}</p>
+  <!-- Display additional details: category, subcategory, location, job type -->
+  <div class="mt-4">
+    <a href="{% url 'job:job_edit' job.pk %}" class="btn btn-warning">Edit</a>
+    <form action="{% url 'job:job_delete' job.pk %}" method="post" class="d-inline">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+
+body {
+  padding-top: 70px;  /* Ensure navbar does not overlap content */
+}
+
+/* Additional responsive tweaks */
+@media (max-width: 576px) {
+  .navbar-brand { font-size: 1.2rem; }
+}

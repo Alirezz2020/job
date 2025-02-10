@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h2>Edit Profile</h2>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="mb-3">
+      <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+      {{ form.username }}
+      {{ form.username.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+      {{ form.first_name }}
+      {{ form.first_name.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+      {{ form.last_name }}
+      {{ form.last_name.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+      {{ form.email }}
+      {{ form.email.errors }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href="{% url 'accounts:profile' %}" class="btn btn-secondary ms-2">Cancel</a>
+  </form>
+</div>
+{% endblock %}

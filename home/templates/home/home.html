@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="jumbotron text-center">
+    <h1>Welcome to the Job Portal</h1>
+    <p class="lead">Find your next career opportunity or post a job today.</p>
+  </div>
+
+  <!-- Search / Filter Form -->
+  <form method="get" action="{% url 'job:job_list' %}" class="row g-3 my-4">
+    <div class="col-md-3">
+      <input type="text" name="q" class="form-control" placeholder="Search for jobs...">
+    </div>
+    <div class="col-md-2">
+      <select name="category" class="form-select">
+        <option value="">Category</option>
+        {% for category in categories %}
+          <option value="{{ category.slug }}">{{ category.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select name="subcategory" class="form-select">
+        <option value="">Subcategory</option>
+        {% for subcat in subcategories %}
+          <option value="{{ subcat.slug }}">{{ subcat.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <input type="text" name="country" class="form-control" placeholder="Country">
+    </div>
+    <div class="col-md-2">
+      <input type="text" name="city" class="form-control" placeholder="City">
+    </div>
+    <div class="col-md-1">
+      <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+  </form>
+
+  <!-- Recent Jobs -->
+  <div class="mt-5">
+    <h2>Recent Jobs</h2>
+    <div class="row">
+      {% for job in recent_jobs %}
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <a href="{% url 'job:job_detail' job.pk %}">{{ job.title }}</a>
+              </h5>
+              <p class="card-text">{{ job.description|truncatewords:15 }}</p>
+              <p class="card-text">
+                <small class="text-muted">Posted {{ job.posted_at|timesince }} ago</small>
+              </p>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p>No jobs found.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

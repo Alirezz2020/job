@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Chat Room{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <h3 class="mb-4 text-center">Chat Room: {{ room_name }}</h3>
+  <div id="chat-log" class="border rounded p-3 mb-3" style="height: 400px; overflow-y: auto; background-color: #f8f9fa;">
+    <!-- Chat messages will appear here -->
+  </div>
+  <form id="chat-form" class="input-group">
+    <input type="text" id="chat-message-input" class="form-control" placeholder="Type your message..." autocomplete="off">
+    <button class="btn btn-primary" type="submit">Send</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const roomName = "{{ room_name }}";
+    const chatSocket = new WebSocket(
+        (window.location.protocol === "https:" ? "wss://" : "ws://") +
+        window.location.host +
+        "/ws/chat/" + roomName + "/"
+    );
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const chatLog = document.getElementById("chat-log");
+        const messageElem = document.createElement("div");
+        messageElem.innerHTML = `<strong>${data.sender}:</strong> ${data.message}`;
+        chatLog.appendChild(messageElem);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    };
+    document.getElementById("chat-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const inputElem = document.getElementById("chat-message-input");
+        const message = inputElem.value;
+        if (message.trim() === "") return;
+        chatSocket.send(JSON.stringify({ "message": message }));
+        inputElem.value = "";
+    });
+</script>
+{% endblock %}

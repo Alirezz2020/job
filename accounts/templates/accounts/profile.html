@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h2>My Profile</h2>
+  <div class="card">
+    <div class="card-body">
+      <p><strong>Username:</strong> {{ user.username }}</p>
+      <p><strong>First Name:</strong> {{ user.first_name }}</p>
+      <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <a href="{% url 'accounts:edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
