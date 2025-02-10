@@ -3,65 +3,78 @@
 
 {% block content %}
 <div class="container my-5">
-  <div class="jumbotron text-center">
-    <h1>Welcome to the Job Portal</h1>
-    <p class="lead">Find your next career opportunity or post a job today.</p>
-  </div>
+  <h1 class="mb-4 text-center">Welcome to the Job Portal</h1>
 
   <!-- Search / Filter Form -->
-  <form method="get" action="{% url 'job:job_list' %}" class="row g-3 my-4">
+  <form method="get" class="row g-3 mb-4">
     <div class="col-md-3">
-      <input type="text" name="q" class="form-control" placeholder="Search for jobs...">
+      <input type="text" name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Search jobs...">
     </div>
     <div class="col-md-2">
-      <select name="category" class="form-select">
-        <option value="">Category</option>
-        {% for category in categories %}
-          <option value="{{ category.slug }}">{{ category.name }}</option>
-        {% endfor %}
-      </select>
+      <input type="text" name="country" value="{{ request.GET.country }}" class="form-control" placeholder="Country">
     </div>
     <div class="col-md-2">
-      <select name="subcategory" class="form-select">
-        <option value="">Subcategory</option>
-        {% for subcat in subcategories %}
-          <option value="{{ subcat.slug }}">{{ subcat.name }}</option>
-        {% endfor %}
-      </select>
+      <input type="text" name="city" value="{{ request.GET.city }}" class="form-control" placeholder="City">
+    </div>
+    <!-- Optional: add category and subcategory filters if desired -->
+    <div class="col-md-2">
+      <input type="text" name="category" value="{{ request.GET.category }}" class="form-control" placeholder="Category (slug)">
     </div>
     <div class="col-md-2">
-      <input type="text" name="country" class="form-control" placeholder="Country">
-    </div>
-    <div class="col-md-2">
-      <input type="text" name="city" class="form-control" placeholder="City">
+      <input type="text" name="subcategory" value="{{ request.GET.subcategory }}" class="form-control" placeholder="Subcategory (slug)">
     </div>
     <div class="col-md-1">
       <button type="submit" class="btn btn-primary">Search</button>
     </div>
   </form>
 
-  <!-- Recent Jobs -->
-  <div class="mt-5">
-    <h2>Recent Jobs</h2>
-    <div class="row">
-      {% for job in recent_jobs %}
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">
-                <a href="{% url 'job:job_detail' job.pk %}">{{ job.title }}</a>
-              </h5>
-              <p class="card-text">{{ job.description|truncatewords:15 }}</p>
-              <p class="card-text">
-                <small class="text-muted">Posted {{ job.posted_at|timesince }} ago</small>
-              </p>
-            </div>
+  <!-- List of Jobs -->
+  <div class="row">
+    {% for job in jobs %}
+      <div class="col-md-6 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">
+              <a href="{% url 'job:job_detail' job.pk %}">{{ job.title }}</a>
+            </h5>
+            <p class="card-text">{{ job.description|truncatewords:20 }}</p>
+          </div>
+          <div class="card-footer text-muted">
+            Posted {{ job.posted_at|timesince }} ago
           </div>
         </div>
-      {% empty %}
-        <p>No jobs found.</p>
-      {% endfor %}
-    </div>
+      </div>
+    {% empty %}
+      <p>No jobs found matching your criteria.</p>
+    {% endfor %}
   </div>
+
+  <!-- Pagination Controls -->
+  {% if is_paginated %}
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.country %}country={{ request.GET.country }}&{% endif %}{% if request.GET.city %}city={{ request.GET.city }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}{% if request.GET.subcategory %}subcategory={{ request.GET.subcategory }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+          </li>
+        {% endif %}
+        {% for num in paginator.page_range %}
+          {% if page_obj.number == num %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li class="page-item">
+              <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.country %}country={{ request.GET.country }}&{% endif %}{% if request.GET.city %}city={{ request.GET.city }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}{% if request.GET.subcategory %}subcategory={{ request.GET.subcategory }}&{% endif %}page={{ num }}">{{ num }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.country %}country={{ request.GET.country }}&{% endif %}{% if request.GET.city %}city={{ request.GET.city }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}{% if request.GET.subcategory %}subcategory={{ request.GET.subcategory }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+
 </div>
 {% endblock %}
